@@ -3,12 +3,13 @@ use std::io::prelude::*;
 use self::spidev::{Spidev, SpidevOptions, SPI_MODE_0};
 use std::usize;
 
-pub const PANELLINESIZE: usize = 32;
-pub const PANELLINECOUNT: usize = 32;
-pub const PANELCOUNT: usize = 6;
-pub const LEDSPERPIXEL: usize = 3;
+pub const PANEL_LINE_SIZE: usize = 32;
+pub const PANEL_LINE_COUNT: usize = 32;
+pub const PANEL_COUNT: usize = 6;
+pub const LEDS_PER_PIXEL: usize = 3;
 
-pub const PANELLINEBUFFERSIZE: usize = PANELLINESIZE * LEDSPERPIXEL;
+pub const LINE_BUFFER_SIZE: usize = PANEL_LINE_SIZE * LEDS_PER_PIXEL;
+pub const PANEL_BUFFER_SIZE: usize = LINE_BUFFER_SIZE * PANEL_LINE_COUNT;
 
 // enum Command {
 //     Line,
@@ -40,10 +41,10 @@ impl Display {
         Display { spi: spidev }
     }
 
-    pub fn write_line(&mut self, panel: u8, line: u8, data: &[u8; PANELLINEBUFFERSIZE]) {
+    pub fn write_line(&mut self, panel: u8, line: u8, data: &[u8; LINE_BUFFER_SIZE]) {
         const HEADER_SIZE: usize = 3;
         
-        let mut buffer = Vec::with_capacity(HEADER_SIZE + PANELLINEBUFFERSIZE);
+        let mut buffer = Vec::with_capacity(HEADER_SIZE + LINE_BUFFER_SIZE);
         let header = [0x01, panel, line];
         buffer.extend_from_slice(&header);
         buffer.extend_from_slice(&data[..]);
