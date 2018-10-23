@@ -52,6 +52,15 @@ impl Display {
         self.spi.write(&buffer).unwrap();
     }
 
+    pub fn write_panel(&mut self, panel: u8, data: &[u8; PANEL_BUFFER_SIZE]) {
+        for line in 0..PANEL_LINE_COUNT {
+            let start = line * PANEL_LINE_SIZE;
+            let end = start + LINE_BUFFER_SIZE;
+            let line_data: [u8; LINE_BUFFER_SIZE] = data[start..end];
+            self.write_line(panel, line as u8, &line_data);
+        }
+    }
+
     pub fn write_image(_data: i8) {
 
     }
