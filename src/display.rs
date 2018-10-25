@@ -10,6 +10,13 @@ pub const LEDS_PER_PIXEL: usize = 3;
 
 pub const LINE_BUFFER_SIZE: usize = PANEL_LINE_SIZE * LEDS_PER_PIXEL;
 pub const PANEL_BUFFER_SIZE: usize = LINE_BUFFER_SIZE * PANEL_LINE_COUNT;
+pub const FRAME_BUFFER_SIZE: usize = PANEL_BUFFER_SIZE * PANEL_COUNT;
+
+// Commands:
+// 0x01: Line mode
+// 0x02: Panel mode
+// 0x03: Frame mode
+// 0x20: Flush (switch) buffer 
 
 // enum Command {
 //     Line,
@@ -52,11 +59,19 @@ impl Display {
         self.spi.write(&buffer).unwrap();
     }
 
-    pub fn write_image(_data: i8) {
+    // pub fn write_frame(&mut self, data: &[u8; FRAME_BUFFER_SIZE]) {
+    pub fn write_frame(&mut self, data: &[u8]) {
+        const HEADER_SIZE: usize = 1;
+        
+        let mut buffer = Vec::with_capacity(HEADER_SIZE + FRAME_BUFFER_SIZE);
+        let header = [0x03];
+        buffer.extend_from_slice(&header);
+        buffer.extend_from_slice(&data[..]);
 
+        self.spi.write(&buffer).unwrap();
     }
 
     pub fn flush(&mut self) {
-        self.spi.write(&[0x08]).unwrap();
+        self.spi.write(&[0x20]).unwrap();
     }
 }
