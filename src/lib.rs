@@ -18,18 +18,10 @@ pub const FRAME_BUFFER_SIZE: usize = PANEL_BUFFER_SIZE * PANEL_COUNT;
 // 0x03: Frame mode
 // 0x20: Flush (switch) buffer 
 
-// enum Command {
-//     Line,
-//     Flush,
-// }
-
-// fn value(command: Command) -> u8 {
-//     match command {
-//         Command::Line => 0x01,
-//         Command::Flush => 0x08,
-//     }
-// }
-
+const LINE_MODE: u8 = 0x01;
+const PANEL_MODE: u8 = 0x02;
+const FRAME_MODE: u8 = 0x03;
+const FLUSH: u8 = 0x20;
 
 pub struct Display {
     spi: Spidev
@@ -52,7 +44,7 @@ impl Display {
         const HEADER_SIZE: usize = 3;
         
         let mut buffer = Vec::with_capacity(HEADER_SIZE + LINE_BUFFER_SIZE);
-        let header = [0x01, panel, line];
+        let header = [LINE_MODE, panel, line];
         buffer.extend_from_slice(&header);
         buffer.extend_from_slice(&data[..]);
 
@@ -64,7 +56,7 @@ impl Display {
         const HEADER_SIZE: usize = 1;
         
         let mut buffer = Vec::with_capacity(HEADER_SIZE + FRAME_BUFFER_SIZE);
-        let header = [0x03];
+        let header = [FRAME_MODE];
         buffer.extend_from_slice(&header);
         buffer.extend_from_slice(&data[..]);
 
@@ -72,6 +64,6 @@ impl Display {
     }
 
     pub fn flush(&mut self) {
-        self.spi.write(&[0x20]).unwrap();
+        self.spi.write(&[FLUSH]).unwrap();
     }
 }
