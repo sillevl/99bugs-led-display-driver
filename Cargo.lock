@@ -14,7 +14,7 @@ version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
-name = "driver-99bugs_display"
+name = "driver_99bugs_display"
 version = "0.1.0"
 dependencies = [
  "spidev 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",

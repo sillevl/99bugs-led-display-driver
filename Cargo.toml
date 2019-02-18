@@ -1,5 +1,5 @@
 [package]
-name = "driver-99bugs_display"
+name = "driver_99bugs_display"
 version = "0.1.0"
 authors = ["Sille Van Landschoot <info@sillevl.be>"]
 
