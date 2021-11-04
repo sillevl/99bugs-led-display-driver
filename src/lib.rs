@@ -47,7 +47,11 @@ impl Display {
         self.spi.write(&buffer).unwrap();
     }
 
-    pub fn write_frame(&mut self, data: &[u8]) {
+    pub fn write_frame(&mut self, data: &[u8]) -> Result<(), String> {
+        if data.len() > FRAME_BUFFER_SIZE {
+          return Err("Data is too large to send to display.".to_string());
+        }
+
         const HEADER_SIZE: usize = 1;
 
         let mut buffer = Vec::with_capacity(HEADER_SIZE + FRAME_BUFFER_SIZE);
@@ -56,6 +60,8 @@ impl Display {
         buffer.extend_from_slice(&data[..]);
 
         self.spi.write(&buffer).unwrap();
+
+        Ok(())
     }
 
     pub fn flush(&mut self) {

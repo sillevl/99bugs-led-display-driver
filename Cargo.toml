@@ -1,6 +1,6 @@
 [package]
 name = "driver_99bugs_display"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Sille Van Landschoot <info@sillevl.be>"]
 
 [dependencies]
