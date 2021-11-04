@@ -1,27 +1,23 @@
 extern crate spidev;
+
 use std::io::prelude::*;
-use self::spidev::{Spidev, SpidevOptions, SPI_MODE_0};
+use spidev::{Spidev, SpidevOptions, SpiModeFlags};
 use std::usize;
 
-pub const PANEL_LINE_SIZE: usize = 32;
+pub const PANEL_LINE_SIZE:  usize = 32;
 pub const PANEL_LINE_COUNT: usize = 32;
-pub const PANEL_COUNT: usize = 6;
-pub const LEDS_PER_PIXEL: usize = 3;
+pub const PANEL_COUNT:      usize = 6;
+pub const LEDS_PER_PIXEL:   usize = 3;
 
-pub const LINE_BUFFER_SIZE: usize = PANEL_LINE_SIZE * LEDS_PER_PIXEL;
-pub const PANEL_BUFFER_SIZE: usize = LINE_BUFFER_SIZE * PANEL_LINE_COUNT;
-pub const FRAME_BUFFER_SIZE: usize = PANEL_BUFFER_SIZE * PANEL_COUNT;
+pub const LINE_BUFFER_SIZE:   usize = PANEL_LINE_SIZE * LEDS_PER_PIXEL;
+pub const PANEL_BUFFER_SIZE:  usize = LINE_BUFFER_SIZE * PANEL_LINE_COUNT;
+pub const FRAME_BUFFER_SIZE:  usize = PANEL_BUFFER_SIZE * PANEL_COUNT;
 
-// Commands:
-// 0x01: Line mode
-// 0x02: Panel mode
-// 0x03: Frame mode
-// 0x20: Flush (switch) buffer 
-
-const LINE_MODE: u8 = 0x01;
-const PANEL_MODE: u8 = 0x02;
-const FRAME_MODE: u8 = 0x03;
-const FLUSH: u8 = 0x20;
+// Commands
+const LINE_MODE:    u8 = 0x01;
+const FRAME_MODE:   u8 = 0x03;
+const RESET:        u8 = 0x08;
+const FLUSH:        u8 = 0x20;
 
 pub struct Display {
     spi: Spidev
@@ -31,7 +27,7 @@ impl Display {
 
     pub fn new(device: &str) -> Display {
         let options = SpidevOptions::new()
-            .mode(SPI_MODE_0)
+            .mode(SpiModeFlags::SPI_MODE_0)
             .bits_per_word(8)
             .max_speed_hz(16_000_000)
             .build();
@@ -51,10 +47,9 @@ impl Display {
         self.spi.write(&buffer).unwrap();
     }
 
-    // pub fn write_frame(&mut self, data: &[u8; FRAME_BUFFER_SIZE]) {
     pub fn write_frame(&mut self, data: &[u8]) {
         const HEADER_SIZE: usize = 1;
-        
+
         let mut buffer = Vec::with_capacity(HEADER_SIZE + FRAME_BUFFER_SIZE);
         let header = [FRAME_MODE];
         buffer.extend_from_slice(&header);
@@ -66,4 +61,9 @@ impl Display {
     pub fn flush(&mut self) {
         self.spi.write(&[FLUSH]).unwrap();
     }
+
+    pub fn reset(&mut self) {
+        self.spi.write(&[RESET]).unwrap();
+    }
+
 }
