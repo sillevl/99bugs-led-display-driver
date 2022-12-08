@@ -1,7 +1,7 @@
 [package]
-name = "driver_99bugs_display"
+name = "devbit_99bugs_led_display_driver"
 version = "0.2.1"
-authors = ["Sille Van Landschoot <info@sillevl.be>"]
+authors = ["Sille Van Landschoot <info@sillevl.be>", "Nico De Witte <nico.dewitte@vives.be>"]
 
 [dependencies]
 spidev = "0.5.0"
