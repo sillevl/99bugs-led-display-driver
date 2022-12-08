@@ -1,7 +1,9 @@
 [package]
-name = "driver_99bugs_display"
-version = "0.1.0"
-authors = ["Sille Van Landschoot <info@sillevl.be>"]
+name = "devbit_99bugs_led_display_driver"
+version = "0.2.1"
+authors = ["Sille Van Landschoot <info@sillevl.be>", "Nico De Witte <nico.dewitte@vives.be>"]
+license = "MIT"
+description = "SPI driver for the 99bug LED Display"
 
 [dependencies]
-spidev = "0.3.0"
+spidev = "0.5.0"
